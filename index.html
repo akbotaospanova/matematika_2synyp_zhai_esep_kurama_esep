@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Жай есептен құрама есепке — 2-сынып</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&family=Rubik:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#062a6b; --blue:#0d47a1; --sky:#1e88e5; --ice:#e3f2fd;
+  --sun:#ffd54f; --coral:#ff7a59; --mint:#2ecc8f; --grape:#7c5cff; --ink:#0f2547;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"Nunito",system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#041e52 0%,#0b3d91 30%,#1565c0 65%,#1e88e5 100%);
+  background-attachment:fixed;min-height:100vh;overflow-x:hidden;
+}
+#bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#bubbles span{position:absolute;bottom:-60px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.08));
+  border:1px solid rgba(255,255,255,.25);animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-115vh) translateX(30px)}}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:16px 14px 120px}
+header.hero{color:#fff;text-align:center;padding:26px 10px 10px}
+.badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  padding:6px 14px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.3px}
+h1{font-family:"Rubik",sans-serif;font-weight:800;font-size:clamp(28px,6vw,52px);margin:14px 0 6px;line-height:1.08;
+  text-shadow:0 4px 0 rgba(0,0,0,.18)}
+h1 .y{color:var(--sun)}
+.formula{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin:16px 0 4px;font-weight:900;font-size:clamp(15px,3.4vw,20px)}
+.chip{padding:8px 14px;border-radius:16px;background:#fff;color:var(--blue);box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.chip.s2{background:var(--sun);color:#5a3d00}.chip.s3{background:var(--mint);color:#053d27}
+.op{color:#fff;font-size:26px}
+.mascot{font-size:64px;display:inline-block;animation:swim 3s ease-in-out infinite}
+@keyframes swim{50%{transform:translateY(-10px) rotate(-6deg)}}
+.goal{max-width:760px;margin:10px auto 0;color:#dbeafe;font-size:15px}
+
+nav{position:sticky;top:0;z-index:5;margin:14px -14px 18px;padding:10px 14px;
+  background:rgba(4,30,82,.72);backdrop-filter:blur(8px);display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:0;cursor:pointer;font:800 15px "Nunito",sans-serif;padding:10px 16px;border-radius:14px;
+  background:rgba(255,255,255,.12);color:#fff;transition:.2s}
+nav button.on{background:var(--sun);color:#3d2a00;box-shadow:0 4px 0 #c9a227}
+
+.panel{display:none;animation:pop .35s ease}
+.panel.on{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}}
+.card{background:rgba(255,255,255,.97);border-radius:26px;padding:20px;margin-bottom:18px;
+  box-shadow:0 14px 30px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:7px;background:linear-gradient(90deg,var(--sky),var(--grape),var(--coral),var(--sun))}
+h2{font-family:"Rubik",sans-serif;font-size:clamp(21px,4.4vw,28px);margin:6px 0 10px;color:var(--blue)}
+h3{margin:14px 0 8px;font-size:19px}
+p{line-height:1.55;margin:8px 0}
+.tag{display:inline-block;font-size:12.5px;font-weight:900;padding:4px 10px;border-radius:999px;margin:2px 4px 2px 0}
+.t-blue{background:#dbeafe;color:#0d47a1}.t-mint{background:#d1fae5;color:#065f46}.t-sun{background:#fef3c7;color:#7c5800}
+.t-coral{background:#ffe4dc;color:#9a3412}.t-grape{background:#ede9fe;color:#4c1d95}
+.value{background:linear-gradient(90deg,#fff7d6,#fff);border-left:6px solid var(--sun);padding:10px 14px;border-radius:12px;font-weight:700;margin:10px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+.box{border-radius:20px;padding:16px;border:2px dashed #bfdbfe;background:#f8fbff}
+.big{font-size:18px;font-weight:800}
+.btn{border:0;cursor:pointer;font:900 16px "Nunito",sans-serif;padding:12px 20px;border-radius:16px;background:var(--sky);color:#fff;
+  box-shadow:0 5px 0 #0d47a1;transition:transform .1s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #0d47a1}
+.btn.y{background:var(--sun);color:#3d2a00;box-shadow:0 5px 0 #c9a227}
+.btn.m{background:var(--mint);box-shadow:0 5px 0 #1a8d62}
+.btn.c{background:var(--coral);box-shadow:0 5px 0 #c4532f}
+.btn.g{background:#e2e8f0;color:#334155;box-shadow:0 5px 0 #94a3b8}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* Transformer */
+.pcard{border-radius:20px;padding:16px;background:#eff6ff;border:3px solid #93c5fd;transition:.4s;font-size:17px;line-height:1.6}
+.pcard.p2{background:#fffbeb;border-color:#fcd34d}
+.pcard h4{margin:0 0 6px;font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:#475569}
+.q{background:#bfdbfe;padding:1px 6px;border-radius:6px;font-weight:800;transition:.5s}
+.q.gone{text-decoration:line-through;opacity:.25;background:#fecaca}
+.n{font-weight:900;color:var(--blue)}
+.n.flash{background:var(--sun);border-radius:6px;padding:0 6px;color:#5a3d00}
+.merged{display:none;margin-top:14px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:3px solid var(--mint);border-radius:22px;padding:18px;font-size:18px;line-height:1.6}
+.merged.on{display:block;animation:pop .5s}
+.bridge{font-size:36px;text-align:center;margin:4px 0;transition:.4s;opacity:.25}
+.bridge.on{opacity:1;transform:scale(1.15)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0}
+.steps li{counter-increment:s;padding:10px 12px 10px 50px;position:relative;margin:8px 0;background:#f1f5ff;border-radius:14px;font-weight:700}
+.steps li::before{content:counter(s);position:absolute;left:10px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;
+  background:var(--grape);color:#fff;display:grid;place-items:center;font-weight:900}
+
+/* Models */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.tabs button{border:2px solid #bfdbfe;background:#fff;border-radius:14px;padding:9px 14px;font:800 15px "Nunito",sans-serif;cursor:pointer;color:var(--blue)}
+.tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.short{font-family:"Rubik",sans-serif;font-size:20px;line-height:1.9;background:#fff;border-radius:16px;padding:12px 18px;border:2px solid #e2e8f0}
+.short b{color:var(--coral)}
+table.mt{border-collapse:separate;border-spacing:0;width:100%;font-size:17px;text-align:center;border-radius:14px;overflow:hidden;border:2px solid #93c5fd}
+table.mt th{background:#1e88e5;color:#fff;padding:10px 6px;font-weight:800}
+table.mt td{padding:12px 6px;background:#fff;font-weight:900;font-size:20px;border-top:2px solid #dbeafe}
+table.mt td+td,table.mt th+th{border-left:2px solid #dbeafe}
+.qmark{color:var(--coral)}
+.bar{display:flex;height:42px;border-radius:10px;overflow:hidden;font-weight:900;color:#fff;font-size:15px}
+.bar div{display:grid;place-items:center;border-right:2px solid #fff}
+.bar div:last-child{border-right:0}
+.brace{text-align:center;font-weight:900;color:#475569;border-top:3px solid #475569;border-radius:12px 12px 0 0;margin-top:4px;padding-top:2px}
+.sline{display:flex;align-items:center;gap:10px;margin:8px 0}
+.sline .lb{width:62px;font-weight:900;font-size:14px;flex:0 0 auto}
+.hatch{background:repeating-linear-gradient(45deg,#ef4444,#ef4444 8px,#f87171 8px,#f87171 16px)!important}
+
+/* Game common */
+.prog{display:flex;gap:6px;margin:6px 0 12px}
+.prog i{flex:1;height:10px;border-radius:6px;background:#e2e8f0}
+.prog i.d{background:var(--mint)}.prog i.c{background:var(--sun)}
+.opt{display:block;width:100%;text-align:left;border:3px solid #e2e8f0;background:#fff;border-radius:18px;padding:14px;margin:10px 0;
+  font:700 16px/1.5 "Nunito",sans-serif;cursor:pointer;color:var(--ink);transition:.15s}
+.opt:hover{border-color:#93c5fd}
+.opt.ok{border-color:var(--mint);background:#ecfdf5}
+.opt.no{border-color:#f87171;background:#fef2f2;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{min-height:24px;font-weight:900;margin:8px 0}
+.fb.ok{color:#059669}.fb.no{color:#dc2626}
+.sol{display:none;background:#f0fdf4;border-radius:14px;padding:12px 14px;font-family:"Rubik",sans-serif;font-size:18px;margin-top:8px}
+.sol.on{display:block}
+.mini{font-size:14px;color:#64748b;font-weight:700}
+input.num{width:64px;font:900 20px "Rubik",sans-serif;text-align:center;border:3px solid #bfdbfe;border-radius:12px;padding:6px;color:var(--blue)}
+input.num.ok{border-color:var(--mint);background:#ecfdf5}input.num.no{border-color:#f87171;background:#fef2f2}
+.eq{font-family:"Rubik",sans-serif;font-size:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.lvl button{border:3px solid transparent}
+.lvl button.on{border-color:#0f2547}
+
+/* Students */
+.studs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:620px){.studs{grid-template-columns:repeat(2,1fr)}}
+.st{border-radius:20px;padding:12px;text-align:center;color:#fff;position:relative}
+.st .av{font-size:38px}
+.st .nm{font-weight:900;font-size:16px;outline:none;border-bottom:2px dashed rgba(255,255,255,.6);min-height:22px;margin:4px 0}
+.st .sc{font-family:"Rubik",sans-serif;font-size:26px}
+.st button{border:0;border-radius:12px;padding:6px 12px;font:900 18px "Nunito",sans-serif;cursor:pointer;margin:2px;background:rgba(255,255,255,.9);color:#0f2547}
+.st .grp{font-size:12px;font-weight:900;background:rgba(0,0,0,.2);border-radius:999px;padding:2px 8px;display:inline-block}
+
+/* quick game */
+.qz{font-size:20px;font-weight:800;background:#eff6ff;border-radius:18px;padding:18px;min-height:110px;display:grid;place-items:center;text-align:center}
+.timer{height:10px;border-radius:6px;background:#e2e8f0;overflow:hidden;margin:10px 0}
+.timer i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--sun),var(--coral));width:100%}
+
+/* reflection */
+.light{display:flex;gap:14px;align-items:center;border-radius:20px;padding:14px;margin:10px 0;cursor:pointer;border:3px solid transparent;transition:.15s;background:#f8fafc}
+.light:hover{transform:translateX(4px)}
+.light .dot{width:54px;height:54px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;font-size:26px;box-shadow:0 0 0 6px rgba(0,0,0,.05)}
+.light .cnt{margin-left:auto;font-family:"Rubik",sans-serif;font-size:26px;min-width:40px;text-align:right}
+.starter{background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:12px 14px;margin:8px 0;font-weight:700}
+.hw{border-radius:20px;padding:16px;color:#0f2547}
+.hw h3{margin-top:0}
+.burst{position:fixed;pointer-events:none;z-index:50;font-size:26px;animation:fly 1.1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+.wave{position:fixed;left:0;right:0;bottom:0;height:80px;z-index:0;pointer-events:none;opacity:.5}
+footer{color:#cfe3ff;text-align:center;font-size:13px;margin-top:24px}
+</style>
+</head>
+<body>
+<div id="bubbles"></div>
+<svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none"><path fill="#0b3d91" d="M0 40 C 240 0 480 80 720 40 S 1200 0 1440 40 V80 H0Z"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 40 C 240 0 480 80 720 40 S 1200 0 1440 40 V80 H0Z;M0 40 C 240 80 480 0 720 40 S 1200 80 1440 40 V80 H0Z;M0 40 C 240 0 480 80 720 40 S 1200 0 1440 40 V80 H0Z"/></path></svg>
+
+<div class="wrap">
+<header class="hero">
+  <div style="margin-bottom:10px"><span class="badge" style="background:var(--sun);color:#3d2a00;border-color:var(--sun);font-size:16px">🎓 Bilim Hub орталығы</span></div>
+  <span class="badge">Математика · 2-сынып · 2.5.1.1</span>
+  <div class="mascot">🐬</div>
+  <h1>Жай есептен <span class="y">құрама есепке!</span></h1>
+  <div class="formula">
+    <span class="chip">Жай есеп ①</span><span class="op">+</span>
+    <span class="chip">Жай есеп ②</span><span class="op">+</span>
+    <span class="chip s2">🌉 Көпір</span><span class="op">=</span>
+    <span class="chip s3">Құрама есеп</span>
+  </div>
+  <p class="goal">Бүгін Дельфин Дана екеуміз екі жай есепті бір құрама есепке айналдырып, оны <b>қысқаша жазба</b>, <b>сызба</b> және <b>кесте</b> түрінде модельдеуді үйренеміз.</p>
+</header>
+
+<nav id="nav">
+  <button data-p="start" class="on">🌊 Бастау</button>
+  <button data-p="learn">💡 Сиқырлы ереже</button>
+  <button data-p="t1">① Көпір құр</button>
+  <button data-p="t2">② Модель аңшысы</button>
+  <button data-p="t3">③ Кесте шебері</button>
+  <button data-p="game">⚡ Жылдам жауап</button>
+  <button data-p="stars">⭐ Жұлдыздар</button>
+  <button data-p="refl">🗼 Рефлексия</button>
+  <button data-p="hw">🏠 Үй тапсырмасы</button>
+</nav>
+
+<!-- START -->
+<section class="panel on" id="start">
+  <div class="card">
+    <span class="tag t-blue">Қызығушылықты ояту</span><span class="tag t-sun">«Жұмбақ меруерт» әдісі</span>
+    <h2>Дельфиннің жұмбақ есебі 🫧</h2>
+    <div class="pcard" style="font-size:19px">
+      Дельфин Данада <span class="n">5</span> доп бар еді. Досы оған тағы <span class="n">3</span> доп сыйлады. Ойнап жүріп <span class="n">2</span> добы толқынға ағып кетті. <b>Данада неше доп қалды?</b>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" onclick="reveal('r1')">🤔 Бір амалмен шыға ма?</button>
+      <button class="btn y" onclick="reveal('r2')">🔢 Шешуін көрсет</button>
+    </div>
+    <div class="sol" id="r1">Жоқ! Алдымен <b>барлық допты</b> табамыз, содан кейін <b>қалған допты</b>. Бұл есеп <b>екі амалмен</b> шығады.</div>
+    <div class="sol" id="r2">1) 5 + 3 = 8 (доп) — барлығы<br>2) 8 − 2 = 6 (доп) — қалды<br><b>Жауабы: 6 доп.</b></div>
+    <div class="value">💎 Құндылық: <b>бірлік және ынтымақ</b> — дос досына көмектеседі, бірге шешкен есеп оңай!</div>
+  </div>
+  <div class="card">
+    <h2>Бүгінгі сабақтың мақсаты 🎯</h2>
+    <ul class="steps">
+      <li>Жай есеп пен құрама есепті ажыратамын.</li>
+      <li>Екі жай есепті «көпір» арқылы бір құрама есепке айналдырамын.</li>
+      <li>Құрама есепті қысқаша жазба, сызба, кесте түрінде модельдеймін.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section class="panel" id="learn">
+  <div class="card">
+    <span class="tag t-grape">Жаңа білім</span>
+    <h2>Жай есеп пен құрама есеп</h2>
+    <div class="grid2">
+      <div class="box"><div class="big">🟦 Жай есеп</div><p><b>Бір амалмен</b> шығарылады.<br>8 + 6 = 14</p></div>
+      <div class="box" style="border-color:#86efac;background:#f0fdf4"><div class="big">🟩 Құрама есеп</div><p><b>Екі амалмен</b> шығарылады.<br>8 + 6 = 14, 14 − 9 = 5</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag t-sun">Көпір ережесі</span>
+    <h2>🌉 Екі есепті қалай біріктіреміз?</h2>
+    <p class="mini">Батырманы басып, қадам-қадаммен қара.</p>
+    <div class="grid2">
+      <div class="pcard" id="e1"><h4>① Жай есеп</h4>Ақбөпе <span class="n">8</span> бауырсақ пісірді. Апасы тағы <span class="n">6</span> бауырсақ пісірді. <span class="q" id="q1">Барлығы неше бауырсақ?</span></div>
+      <div class="pcard p2" id="e2"><h4>② Жай есеп</h4><span class="n" id="n14">14</span> бауырсақ болды. Қонақтарға <span class="n">9</span> бауырсақ берді. <span class="q">Неше бауырсақ қалды?</span></div>
+    </div>
+    <div class="bridge" id="br">🌉</div>
+    <div class="merged" id="mg">
+      <b>🟩 Құрама есеп:</b><br>
+      Ақбөпе <span class="n">8</span> бауырсақ пісірді. Апасы тағы <span class="n">6</span> бауырсақ пісірді. Қонақтарға <span class="n">9</span> бауырсақ берді. <span class="q">Неше бауырсақ қалды?</span>
+    </div>
+    <p class="fb" id="stepTxt"></p>
+    <div class="row"><button class="btn y" id="stepBtn" onclick="nextStep()">1-қадам ▶</button><button class="btn g" onclick="resetSteps()">↺ Қайта</button></div>
+    <h3>Есте сақта! 🧠</h3>
+    <ul class="steps">
+      <li>Бірінші есептің <b>сұрағын алып тастаймыз</b>.</li>
+      <li>Оның жауабы (14) екінші есепте <b>белгісіз санға</b> айналады.</li>
+      <li>Екі шартты қосып, <b>екінші есептің сұрағын</b> қоямыз.</li>
+    </ul>
+    <div class="value">💎 Құндылық: <b>еңбекқорлық</b> — Ақбөпе апасына көмектесіп, қонақтарды бауырсақпен сыйлады.</div>
+  </div>
+
+  <div class="card">
+    <span class="tag t-coral">Модельдеу</span>
+    <h2>Құрама есептің 3 моделі</h2>
+    <div class="tabs" id="mtabs">
+      <button class="on" data-m="m1">✍️ Қысқаша жазба</button>
+      <button data-m="m2">📏 Сызба</button>
+      <button data-m="m3">📋 Кесте</button>
+    </div>
+    <div id="m1" class="mview">
+      <div class="short">Пісірді — <span class="n">8</span> б.<br>Тағы пісірді — <span class="n">6</span> б.<br>Берді — <span class="n">9</span> б.<br>Қалды — <b>?</b> б.</div>
+    </div>
+    <div id="m2" class="mview" style="display:none">
+      <div class="sline"><span class="lb">Болды</span><div style="flex:1"><div class="bar"><div style="flex:8;background:#1e88e5">8</div><div style="flex:6;background:#2ecc8f">6</div></div></div></div>
+      <div class="sline"><span class="lb"></span><div style="flex:1"><div class="bar"><div class="hatch" style="flex:9">берді 9</div><div style="flex:5;background:#ff7a59">? қалды</div></div></div></div>
+      <p class="mini">Үстіңгі кесінді — барлық бауырсақ (8 + 6). Астыңғы кесіндіде берілгені сызылған, қалғаны — «?».</p>
+    </div>
+    <div id="m3" class="mview" style="display:none">
+      <table class="mt"><tr><th>Пісірді</th><th>Тағы пісірді</th><th>Берді</th><th>Қалды</th></tr><tr><td>8</td><td>6</td><td>9</td><td class="qmark">?</td></tr></table>
+    </div>
+    <div class="sol on" style="margin-top:14px">1) 8 + 6 = 14 (б.)<br>2) 14 − 9 = 5 (б.)<br><b>Жауабы: 5 бауырсақ қалды.</b></div>
+  </div>
+</section>
+
+<!-- TASK 1 -->
+<section class="panel" id="t1">
+  <div class="card">
+    <span class="tag t-blue">1-тапсырма</span><span class="tag t-mint">Жұптық жұмыс · 3 жұп</span>
+    <h2>🌉 Көпір құр!</h2>
+    <p>Екі жай есепті оқы. Олардан дұрыс құралған <b>құрама есепті</b> тап.</p>
+    <div class="prog" id="p1"></div>
+    <div id="g1"></div>
+    <div class="value">💎 Құндылық: <b>еңбекқорлық және жауапкершілік</b> — жұбыңмен ақылдасып, жауапқа бірге жауап бер.</div>
+  </div>
+</section>
+
+<!-- TASK 2 -->
+<section class="panel" id="t2">
+  <div class="card">
+    <span class="tag t-blue">2-тапсырма</span><span class="tag t-grape">Топтық жұмыс · 2 топ</span>
+    <h2>🔍 Модель аңшысы</h2>
+    <p>Құрама есепті оқы. Оған сай келетін <b>модельді</b> тап: қысқаша жазба, сызба, кесте.</p>
+    <div class="prog" id="p2"></div>
+    <div id="g2"></div>
+    <div class="value">💎 Құндылық: <b>бірлік және ынтымақ</b> — топта әркімнің пікірін тыңдап, ортақ шешім қабылдаймыз.</div>
+  </div>
+</section>
+
+<!-- TASK 3 -->
+<section class="panel" id="t3">
+  <div class="card">
+    <span class="tag t-blue">3-тапсырма</span><span class="tag t-coral">Жеке жұмыс · саралау</span>
+    <h2>📋 Кесте шебері</h2>
+    <p>Деңгейіңді таңда. Кестені толтырып, есепті екі амалмен шеш.</p>
+    <div class="row lvl" id="lvl">
+      <button class="btn m on" data-l="0">A · Бастаушы</button>
+      <button class="btn y" data-l="1">B · Зерттеуші</button>
+      <button class="btn c" data-l="2">C · Шебер</button>
+    </div>
+    <div id="g3" style="margin-top:14px"></div>
+    <div class="value">💎 Құндылық: <b>әділдік және жауапкершілік</b> — өз жұмысымды өзім адал орындаймын.</div>
+  </div>
+</section>
+
+<!-- QUICK GAME -->
+<section class="panel" id="game">
+  <div class="card">
+    <span class="tag t-sun">Бекіту ойыны</span>
+    <h2>⚡ Жылдам жауап: жай ма, құрама ма?</h2>
+    <p>Әр есепке 15 секунд. Жауапты тез тап!</p>
+    <div class="timer"><i id="tbar"></i></div>
+    <div class="qz" id="qz">«Бастау» батырмасын бас 🐬</div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="btn" onclick="ans(1)">🟦 Жай есеп</button>
+      <button class="btn m" onclick="ans(2)">🟩 Құрама есеп</button>
+    </div>
+    <p class="fb" id="qfb" style="text-align:center"></p>
+    <div class="row" style="justify-content:center"><button class="btn y" onclick="startQuick()">▶ Бастау</button></div>
+  </div>
+</section>
+
+<!-- STARS -->
+<section class="panel" id="stars">
+  <div class="card">
+    <span class="tag t-sun">Қалыптастырушы бағалау</span>
+    <h2>⭐ Жұлдыз жинау тақтасы</h2>
+    <p class="mini">Атын басып, оқушының есімін жаз. Әр дұрыс жауапқа ⭐ қос. Жұптар: 1–2, 3–4, 5–6. Топтар: «Дельфиндер» (1–3), «Желкендер» (4–6).</p>
+    <div class="studs" id="studs"></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn g" onclick="resetStars()">↺ Тазалау</button>
+      <span class="big" id="teams"></span>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION -->
+<section class="panel" id="refl">
+  <div class="card">
+    <span class="tag t-grape">Рефлексия</span><span class="tag t-blue">«Маяк» әдісі</span>
+    <h2>🗼 Менің маягым қандай түске жанады?</h2>
+    <p>Әр оқушы өз түсін басады. Нәтиже бірден көрінеді.</p>
+    <div class="light" onclick="vote(0)"><div class="dot" style="background:#2ecc8f">🌟</div><div><b>Жасыл маяк</b><br><span class="mini">Құрама есеп құрап, оны модельдей аламын. Досыма да түсіндіремін!</span></div><div class="cnt" id="v0">0</div></div>
+    <div class="light" onclick="vote(1)"><div class="dot" style="background:#ffd54f">🙂</div><div><b>Сары маяк</b><br><span class="mini">Түсіндім, бірақ сызба/кесте құруда аздап көмек керек.</span></div><div class="cnt" id="v1">0</div></div>
+    <div class="light" onclick="vote(2)"><div class="dot" style="background:#ff7a59">🤔</div><div><b>Қызыл маяк</b><br><span class="mini">Әлі қиналамын, тағы бір рет түсіндірші.</span></div><div class="cnt" id="v2">0</div></div>
+    <div class="row"><button class="btn g" onclick="resetVotes()">↺ Тазалау</button><span class="mini" id="vtot"></span></div>
+    <h3>Сөйлемді аяқта ✍️</h3>
+    <div class="starter">📌 Бүгін мен ... үйрендім.</div>
+    <div class="starter">📌 Жай есепті құрама есепке айналдыру үшін ... керек.</div>
+    <div class="starter">📌 Маған ең ұнаған модель — ..., себебі ...</div>
+    <div class="starter">📌 Маған әлі қиын болғаны ...</div>
+  </div>
+</section>
+
+<!-- HOMEWORK -->
+<section class="panel" id="hw">
+  <div class="card">
+    <span class="tag t-coral">Үй тапсырмасы</span><span class="tag t-mint">Саралап берілген</span>
+    <h2>🏠 Үйде орында</h2>
+    <div class="grid3">
+      <div class="hw" style="background:#d1fae5"><h3>A деңгей</h3>
+        <p><b>Екі жай есепті құрама есепке айналдыр:</b></p>
+        <p>① Тауықта 7 балапан бар еді. Тағы 5 балапан шықты. Барлығы неше балапан?</p>
+        <p>② 12 балапанның 4-еуі ұяға кірді. Ауланда неше балапан қалды?</p>
+        <p>Құрама есепті жазып, <b>қысқаша жазбасын</b> құр да, шеш.</p></div>
+      <div class="hw" style="background:#fef3c7"><h3>B деңгей</h3>
+        <p><b>Есепті сызба арқылы модельде және шеш:</b></p>
+        <p>Әжем 18 құмыраға тосап құйды. Оның 6-уын көршілерге сыйлады, кейін тағы 9 құмыра құйды. Әжемде неше құмыра тосап болды?</p>
+        <p>Сызбаны түрлі түсті қаламмен сыз.</p></div>
+      <div class="hw" style="background:#ede9fe"><h3>C деңгей</h3>
+        <p><b>«Менің отбасымның есебі»</b></p>
+        <p>Отбасыңдағы бір жағдай бойынша (дастархан, бақша, кітап, ойыншық) өзің <b>екі жай есеп</b> құрастыр.</p>
+        <p>Оларды бір құрама есепке айналдырып, <b>кесте</b> түрінде модельде және шеш.</p></div>
+    </div>
+    <div class="value">💎 Құндылық: <b>отбасы құндылығы және еңбекқорлық</b> — есепті үйдегілермен бірге талқыла, олардың көмегіне алғыс айт.</div>
+    <p class="mini">Бағалау критерийі: екі жай есепті құрама есепке айналдырады · есепті модельдейді (жазба / сызба / кесте) · екі амалмен дұрыс шешеді.</p>
+  </div>
+</section>
+
+<footer><b style="color:#ffd54f;font-size:15px">🎓 Bilim Hub орталығы</b><br>🐬 «Математика мұхиты» · 2-сынып · Жай есептерді құрама есепке айналдыру</footer>
+</div>
+
+<script>
+/* bubbles */
+(function(){const b=document.getElementById('bubbles');for(let i=0;i<22;i++){const s=document.createElement('span');const z=8+Math.random()*34;
+s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;animation-duration:${9+Math.random()*14}s;animation-delay:-${Math.random()*20}s`;b.appendChild(s);}})();
+
+/* nav */
+const nav=document.getElementById('nav');
+nav.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;show(b.dataset.p);});
+function show(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));
+  nav.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.p===id));window.scrollTo({top:document.querySelector('nav').offsetTop-4,behavior:'smooth'});}
+function reveal(id){document.getElementById(id).classList.add('on');}
+
+function burst(x,y){const em=['⭐','🫧','🐬','✨','🐚'];for(let i=0;i<14;i++){const s=document.createElement('div');s.className='burst';
+ s.textContent=em[i%em.length];s.style.left=x+'px';s.style.top=y+'px';s.style.setProperty('--x',(Math.random()*240-120)+'px');s.style.setProperty('--y',(Math.random()*-220-30)+'px');
+ document.body.appendChild(s);setTimeout(()=>s.remove(),1200);}}
+function burstEl(el){const r=el.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2);}
+
+/* steps transformer */
+let st=0;const stepMsgs=["1-қадам: бірінші есептің сұрағын алып тастадық ✂️","2-қадам: оның жауабы 14 енді белгісіз — оны есептен шығарамыз, өйткені оны оқушы өзі табады 🔎","3-қадам: екі шартты біріктіріп, екінші есептің сұрағын қойдық. Құрама есеп дайын! 🎉"];
+function nextStep(){const btn=document.getElementById('stepBtn');
+ if(st===0){document.getElementById('q1').classList.add('gone');}
+ if(st===1){document.getElementById('n14').classList.add('flash');document.getElementById('n14').textContent='?';document.getElementById('br').classList.add('on');}
+ if(st===2){document.getElementById('mg').classList.add('on');burstEl(document.getElementById('mg'));}
+ if(st<3){document.getElementById('stepTxt').textContent=stepMsgs[st];document.getElementById('stepTxt').className='fb ok';st++;}
+ btn.textContent=st<3?(st+1)+'-қадам ▶':'Дайын ✔';}
+function resetSteps(){st=0;document.getElementById('q1').classList.remove('gone');const n=document.getElementById('n14');n.classList.remove('flash');n.textContent='14';
+ document.getElementById('br').classList.remove('on');document.getElementById('mg').classList.remove('on');document.getElementById('stepTxt').textContent='';document.getElementById('stepBtn').textContent='1-қадам ▶';}
+
+/* model tabs */
+document.getElementById('mtabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ document.querySelectorAll('#mtabs button').forEach(x=>x.classList.toggle('on',x===b));
+ document.querySelectorAll('.mview').forEach(v=>v.style.display=v.id===b.dataset.m?'block':'none');});
+
+/* generic choice game */
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);}
+function makeGame(cfg){let i=0;const box=document.getElementById(cfg.box),pr=document.getElementById(cfg.prog);
+ function prog(){pr.innerHTML=cfg.rounds.map((_,k)=>`<i class="${k<i?'d':k===i?'c':''}"></i>`).join('');}
+ function render(){prog();if(i>=cfg.rounds.length){box.innerHTML=`<div class="qz">🏆 Жарайсыңдар! Барлық раунд аяқталды!</div><div class="row" style="justify-content:center;margin-top:12px"><button class="btn y" id="${cfg.box}r">↺ Қайта ойнау</button></div>`;
+   document.getElementById(cfg.box+'r').onclick=()=>{i=0;render();};burstEl(box);return;}
+  const r=cfg.rounds[i];const opts=shuffle(r.opts.map((o,k)=>({o,k})));
+  box.innerHTML=`<div class="mini">Раунд ${i+1} / ${cfg.rounds.length}</div>${r.head}<div class="fb" id="${cfg.box}f"></div>`+
+   opts.map(x=>`<button class="opt" data-k="${x.k}">${x.o}</button>`).join('')+`<div class="sol" id="${cfg.box}s">${r.sol}</div><div class="row" style="margin-top:10px"><button class="btn" id="${cfg.box}n" style="display:none">Келесі ▶</button></div>`;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const f=document.getElementById(cfg.box+'f');
+   if(+b.dataset.k===0){b.classList.add('ok');f.className='fb ok';f.textContent='✅ Дұрыс! Керемет!';document.getElementById(cfg.box+'s').classList.add('on');
+     document.getElementById(cfg.box+'n').style.display='inline-block';burstEl(b);box.querySelectorAll('.opt').forEach(x=>x.onclick=null);}
+   else{b.classList.add('no');f.className='fb no';f.textContent='❌ '+(r.hint||'Тағы ойлан!');}});
+  document.getElementById(cfg.box+'n').onclick=()=>{i++;render();};}
+ render();}
+
+/* TASK 1 data */
+makeGame({box:'g1',prog:'p1',rounds:[
+ {head:`<div class="grid2"><div class="pcard"><h4>① Жай есеп</h4>Ағашта 12 торғай отырды. Тағы 5 торғай ұшып келіп қонды. Ағашта неше торғай болды?</div><div class="pcard p2"><h4>② Жай есеп</h4>Ағашта 17 торғай отырды. 7 торғай ұшып кетті. Ағашта неше торғай қалды?</div></div>`,
+  opts:["Ағашта 12 торғай отырды. Тағы 5 торғай ұшып келіп қонды, кейін 7 торғай ұшып кетті. Ағашта неше торғай қалды?",
+        "Ағашта 12 торғай отырды. Тағы 5 торғай қонды. Неше торғай болды? 7 торғай ұшып кетті.",
+        "Ағашта 17 торғай отырды. 7 торғай ұшып кетті. Ағашта неше торғай қалды?"],
+  hint:"Есте сақта: бірінші есептің сұрағы мен жауабы (17) құрама есепте болмайды!",
+  sol:"1) 12 + 5 = 17 (т.)<br>2) 17 − 7 = 10 (т.)<br><b>Жауабы: 10 торғай.</b>"},
+ {head:`<div class="grid2"><div class="pcard"><h4>① Жай есеп</h4>Сөреде 20 кітап бар еді. Оқушылар 6 кітапты алды. Сөреде неше кітап қалды?</div><div class="pcard p2"><h4>② Жай есеп</h4>Сөреде 14 кітап бар еді. Кітапханашы тағы 10 кітап қойды. Сөреде неше кітап болды?</div></div>`,
+  opts:["Сөреде 20 кітап бар еді. Оқушылар 6 кітапты алды, ал кітапханашы тағы 10 кітап қойды. Сөреде неше кітап болды?",
+        "Сөреде 20 кітап бар еді. Оқушылар 6 кітапты алды. Кітапханашы 14 кітап қойды. Неше кітап алды?",
+        "Сөреде 14 кітап бар еді. Тағы 10 кітап қойды. Сөреде неше кітап болды?"],
+  hint:"Бұл жай есеп немесе сұрағы дұрыс емес. Қайта қара!",
+  sol:"1) 20 − 6 = 14 (к.)<br>2) 14 + 10 = 24 (к.)<br><b>Жауабы: 24 кітап.</b>"},
+ {head:`<div class="grid2"><div class="pcard"><h4>① Жай есеп</h4>Асан 9 алма терді, ал Ерлан одан 4 алма артық терді. Ерлан неше алма терді?</div><div class="pcard p2"><h4>② Жай есеп</h4>Асан 9 алма, Ерлан 13 алма терді. Екеуі барлығы неше алма терді?</div></div>`,
+  opts:["Асан 9 алма терді, ал Ерлан одан 4 алма артық терді. Екеуі барлығы неше алма терді?",
+        "Асан 9 алма терді, ал Ерлан одан 4 алма артық терді. Ерлан неше алма терді?",
+        "Асан 9 алма терді, ал Ерлан 13 алма терді. Ерлан неше алма артық терді?"],
+  hint:"Құрама есептің сұрағы — екінші есептің сұрағы!",
+  sol:"1) 9 + 4 = 13 (а.) — Ерлан<br>2) 9 + 13 = 22 (а.) — екеуі<br><b>Жауабы: 22 алма.</b>"}
+]});
+
+/* TASK 2 bars helpers */
+const U=4.2;
+function seg(n,c,t){return `<div style="flex:${n};background:${c}">${t??n}</div>`;}
+function bars(rows){return rows.map(r=>`<div class="sline"><span class="lb">${r[0]}</span><div style="flex:1;display:flex"><div class="bar" style="width:${r[2]*U}%">${r[1]}</div></div></div>`).join('');}
+makeGame({box:'g2',prog:'p2',rounds:[
+ {head:`<div class="pcard"><h4>Құрама есеп · қысқаша жазбаны тап</h4>Аулада 15 бала ойнап жүрді. 6 бала үйіне кетті, ал 8 бала ойнауға келді. Аулада неше бала болды?</div>`,
+  opts:[`<div class="short" style="font-size:17px">Ойнады — 15 б.<br>Кетті — 6 б.<br>Келді — 8 б.<br>Болды — <b>?</b> б.</div>`,
+        `<div class="short" style="font-size:17px">Ойнады — 15 б.<br>Келді — 6 б.<br>Кетті — 8 б.<br>Қалды — <b>?</b> б.</div>`,
+        `<div class="short" style="font-size:17px">Ойнады — 6 б.<br>Кетті — 15 б.<br>Келді — 8 б.<br>Болды — <b>?</b> б.</div>`],
+  hint:"Сандар мен сөздердің орнын тексер: кім кетті, кім келді?",
+  sol:"1) 15 − 6 = 9 (б.)<br>2) 9 + 8 = 17 (б.)<br><b>Жауабы: 17 бала.</b>"},
+ {head:`<div class="pcard"><h4>Құрама есеп · сызбаны тап</h4>Бірінші қорапта 7 қарындаш бар, екінші қорапта одан 5 қарындаш артық. Екі қорапта барлығы неше қарындаш?</div>`,
+  opts:[bars([["I қ.",seg(7,'#1e88e5'),7],["II қ.",seg(7,'#1e88e5')+seg(5,'#2ecc8f','+5'),12]])+`<div class="brace" style="margin-left:72px">? барлығы</div>`,
+        bars([["I қ.",seg(7,'#1e88e5'),7],["II қ.",seg(2,'#1e88e5','2'),2]])+`<div class="mini" style="margin-left:72px">II қорап: 7 − 5</div>`,
+        bars([["I қ.",seg(7,'#1e88e5'),7],["II қ.",seg(5,'#2ecc8f'),5]])+`<div class="brace" style="margin-left:72px">? барлығы</div>`],
+  hint:"«Одан 5 артық» — екінші кесінді біріншіден ҰЗЫН болуы керек!",
+  sol:"1) 7 + 5 = 12 (қ.) — II қорапта<br>2) 7 + 12 = 19 (қ.)<br><b>Жауабы: 19 қарындаш.</b>"},
+ {head:`<div class="pcard"><h4>Құрама есеп · кестені тап</h4>Дүкенде 30 кг алма болды. Таңертең 12 кг, түсте 10 кг алма сатылды. Дүкенде неше кг алма қалды?</div>`,
+  opts:[`<table class="mt"><tr><th>Болды</th><th>Таңертең сатылды</th><th>Түсте сатылды</th><th>Қалды</th></tr><tr><td>30 кг</td><td>12 кг</td><td>10 кг</td><td class="qmark">?</td></tr></table>`,
+        `<table class="mt"><tr><th>Болды</th><th>Таңертең сатылды</th><th>Түсте сатылды</th><th>Қалды</th></tr><tr><td class="qmark">?</td><td>12 кг</td><td>10 кг</td><td>30 кг</td></tr></table>`,
+        `<table class="mt"><tr><th>Болды</th><th>Таңертең әкелді</th><th>Түсте әкелді</th><th>Барлығы</th></tr><tr><td>30 кг</td><td>12 кг</td><td>10 кг</td><td class="qmark">?</td></tr></table>`],
+  hint:"Белгісіз не? Алма сатылды ма, әкелінді ме?",
+  sol:"1) 30 − 12 = 18 (кг)<br>2) 18 − 10 = 8 (кг)<br><b>Жауабы: 8 кг алма қалды.</b>"}
+]});
+
+/* TASK 3 levels */
+const L3=[
+ {t:"Аквариумда 10 балық болды. Әкем тағы 5 балық жіберді. Кейін 3 балықты басқа аквариумға көшірді. Аквариумда неше балық қалды?",
+  head:["Болды","Жіберді","Көшірді","Қалды"],cells:[10,'i5','i3','?'],
+  eqs:[[10,'+',5,'i15'],['i15','−',3,'i12']],ans:"Жауабы: 12 балық қалды."},
+ {t:"Кемеде 25 жолаушы болды. Аялдамада 8 жолаушы түсті, 13 жолаушы мінді. Кемеде неше жолаушы болды?",
+  head:["Болды","Түсті","Мінді","Болды (соңы)"],cells:['i25','i8','i13','?'],
+  eqs:[['i25','i−','i8','i17'],['i17','i+','i13','i30']],ans:"Жауабы: 30 жолаушы."},
+ {t:"Дельфин бірінші күні 16 рет секірді, екінші күні одан 7 рет артық секірді. Екі күнде барлығы неше рет секірді?",
+  head:["I күн","II күн","Барлығы"],cells:['i16','?','?'],
+  eqs:[['i16','i+','i7','i23'],['i16','i+','i23','i39']],ans:"Жауабы: 39 рет.",extra:true}
+];
+let lv=0;
+document.getElementById('lvl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;lv=+b.dataset.l;
+ document.querySelectorAll('#lvl button').forEach(x=>x.classList.toggle('on',x===b));render3();});
+function cell(v){if(typeof v==='string'&&v[0]==='i'){const val=v.slice(1);
+   if(val==='+'||val==='−')return `<select class="num" data-a="${val}" style="width:64px"><option></option><option>+</option><option>−</option></select>`;
+   return `<input class="num" inputmode="numeric" data-a="${val}">`;}
+ return v==='?'?'<span class="qmark">?</span>':`<b>${v}</b>`;}
+function render3(){const d=L3[lv];const g=document.getElementById('g3');
+ g.innerHTML=`<div class="pcard">${d.t}</div><h3>1) Кестені толтыр</h3><table class="mt"><tr>${d.head.map(h=>`<th>${h}</th>`).join('')}</tr><tr>${d.cells.map(c=>`<td>${cell(c)}</td>`).join('')}</tr></table>
+ <h3>2) Екі амалмен шеш</h3>${d.eqs.map((q,k)=>`<div class="eq"><b>${k+1})</b> ${cell(q[0])} ${typeof q[1]==='string'&&q[1][0]==='i'?cell(q[1]):`<b>${q[1]}</b>`} ${cell(q[2])} = ${cell(q[3])}</div>`).join('')}
+ ${d.extra?`<h3>3) ⭐ Шебер тапсырмасы</h3><p>Осы есептің сұрағын өзгертіп, жаңа құрама есеп құрастыр (мысалы: «Екінші күні бірінші күннен 7 кем секірді...»). Дәптеріңе кесте түрінде модельде.</p>`:''}
+ <div class="row"><button class="btn m" id="chk3">✔ Тексеру</button><button class="btn g" onclick="render3()">↺ Тазалау</button></div><p class="fb" id="f3"></p>`;
+ document.getElementById('chk3').onclick=()=>{let ok=true;g.querySelectorAll('[data-a]').forEach(x=>{const good=x.value.trim()===x.dataset.a;x.classList.toggle('ok',good);x.classList.toggle('no',!good);if(!good)ok=false;});
+  const f=document.getElementById('f3');if(ok){f.className='fb ok';f.textContent='🏆 Тамаша! '+d.ans;burstEl(f);}else{f.className='fb no';f.textContent='Қызыл ұяшықтарды қайта тексер 🔎';}};}
+render3();
+
+/* QUICK GAME */
+const QZ=[["Қапта 9 кәмпит бар еді. Мен 4 кәмпит жедім. Неше кәмпит қалды?",1],
+ ["Сыныпта 14 оқушы болды. 3 оқушы кетті, 5 оқушы келді. Сыныпта неше оқушы болды?",2],
+ ["Анар 6 гүл отырғызды, Әлия одан 2 гүл артық отырғызды. Екеуі барлығы неше гүл отырғызды?",2],
+ ["Себетте 5 алма, 3 алмұрт бар. Себетте барлығы неше жеміс бар?",1],
+ ["Бақшадан 10 қияр жинады, қызанақты одан 4 кем жинады. Барлығы неше көкөніс жинады?",2],
+ ["Асқарда 20 теңге бар еді. Ол 7 теңгеге қалам алды. Асқарда неше теңге қалды?",1]];
+let qi=-1,qs=0,qt=null,qlock=true,qorder=[];
+function startQuick(){qorder=shuffle(QZ.slice());qi=-1;qs=0;nextQ();}
+function nextQ(){clearInterval(qt);qi++;const fb=document.getElementById('qfb');
+ if(qi>=qorder.length){qlock=true;document.getElementById('qz').innerHTML=`🏁 Нәтиже: <b>${qs} / ${qorder.length}</b> ${qs>=5?'🌟 Керемет!':qs>=3?'👍 Жақсы!':'💪 Талпын!'}`;fb.textContent='';if(qs>=5)burstEl(document.getElementById('qz'));return;}
+ qlock=false;document.getElementById('qz').textContent=qorder[qi][0];fb.textContent=`${qi+1} / ${qorder.length}`;fb.className='fb';
+ let t=15;const bar=document.getElementById('tbar');bar.style.width='100%';
+ qt=setInterval(()=>{t-=.1;bar.style.width=(t/15*100)+'%';if(t<=0){clearInterval(qt);qlock=true;fb.className='fb no';fb.textContent='⏰ Уақыт бітті!';setTimeout(nextQ,1200);}},100);}
+function ans(v){if(qlock)return;qlock=true;clearInterval(qt);const fb=document.getElementById('qfb');
+ if(v===qorder[qi][1]){qs++;fb.className='fb ok';fb.textContent='✅ Дұрыс!';}else{fb.className='fb no';fb.textContent='❌ Бұл '+(qorder[qi][1]===2?'құрама (екі амал)':'жай (бір амал)')+' есеп';}
+ setTimeout(nextQ,1300);}
+
+/* STARS */
+const COLORS=['#1e88e5','#7c5cff','#0ea5a4','#ff7a59','#f59e0b','#ec4899'],AV=['🐬','🐳','🐠','🐙','🦀','🐢'];
+let S=[1,2,3,4,5,6].map(n=>({n:n+'-оқушы',s:0}));
+try{const x=JSON.parse(localStorage.getItem('mat2stars'));if(x&&x.length===6)S=x;}catch(e){}
+function saveS(){try{localStorage.setItem('mat2stars',JSON.stringify(S));}catch(e){}}
+function renderS(){const w=document.getElementById('studs');w.innerHTML=S.map((x,k)=>`<div class="st" style="background:${COLORS[k]}"><span class="grp">${k<3?'Дельфиндер':'Желкендер'} · ${Math.floor(k/2)+1}-жұп</span><div class="av">${AV[k]}</div>
+ <div class="nm" contenteditable="true" data-k="${k}">${x.n}</div><div class="sc">⭐ ${x.s}</div><button data-k="${k}" data-d="-1">−</button><button data-k="${k}" data-d="1">+⭐</button></div>`).join('');
+ const a=S.slice(0,3).reduce((p,c)=>p+c.s,0),b=S.slice(3).reduce((p,c)=>p+c.s,0);document.getElementById('teams').textContent=`🐬 Дельфиндер: ${a}  ·  ⛵ Желкендер: ${b}`;}
+document.getElementById('studs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;S[k].s=Math.max(0,S[k].s+(+b.dataset.d));saveS();renderS();if(+b.dataset.d>0)burst(e.clientX,e.clientY);});
+document.getElementById('studs').addEventListener('input',e=>{const k=e.target.dataset.k;if(k!==undefined){S[k].n=e.target.textContent;saveS();}});
+document.getElementById('studs').addEventListener('focusout',()=>renderS());
+function resetStars(){S=S.map(x=>({n:x.n,s:0}));saveS();renderS();}
+renderS();
+
+/* REFLECTION */
+let V=[0,0,0];
+function rv(){V.forEach((v,k)=>document.getElementById('v'+k).textContent=v);const t=V[0]+V[1]+V[2];document.getElementById('vtot').textContent=`Барлығы: ${t} / 6 оқушы`;}
+function vote(k){V[k]++;rv();burstEl(document.getElementById('v'+k));}
+function resetVotes(){V=[0,0,0];rv();}
+rv();
+</script>
+</body>
+</html>
